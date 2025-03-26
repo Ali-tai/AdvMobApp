@@ -7,11 +7,16 @@ class SummaryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Summary')),
-      body: const Center(
-        child: Text('Summary Details Here', style: TextStyle(fontSize: 18)),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: const Text('Résumer'),
+        centerTitle: true,
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.white,
       ),
+      body: Text('Summary screen'),
       bottomNavigationBar: const BottomNavBar(qrData: ''),
     );
+    throw UnimplementedError();
+    }
   }
-}

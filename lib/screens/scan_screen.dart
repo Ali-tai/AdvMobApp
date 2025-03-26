@@ -1,9 +1,50 @@
-/* import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
+import '../widgets/bottom_nav_bar.dart';
 import 'info_screen.dart'; // Navigate to InfoScreen after scanning
 import 'dart:io';
 
+class ScanScreen extends StatelessWidget {
+  const ScanScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          title: const Text('Scan'),
+          centerTitle: true,
+          automaticallyImplyLeading: false,
+          backgroundColor: Colors.white,
+        ),
+        body: Center(
+          child: Column(
+            children: [
+              Padding(padding: EdgeInsets.only(top: 60, bottom: 400)),
+              ElevatedButton(
+                  onPressed: () => InfoScreen(qrData: ''),
+                  child: Text(''),
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(Colors.grey),
+                    padding: MaterialStatePropertyAll(EdgeInsets.only(top: 50, bottom: 50, left: 60, right: 60)),
+                    side: MaterialStatePropertyAll(BorderSide(color: Colors.black)),
+                  )
+              )
+            ]
+          )
+        ),
+        bottomNavigationBar: const BottomNavBar(qrData: ''),
+    );
+    throw UnimplementedError();
+  }
+}
+
+
+
+
+
+/*
 class ScanScreen extends StatefulWidget {
   const ScanScreen({super.key});
 
@@ -78,5 +119,11 @@ class _ScanScreenState extends State<ScanScreen> {
         ],
       ),
     );
+  }
+
+  @override
+  State<StatefulWidget> createState() {
+    // TODO: implement createState
+    throw UnimplementedError();
   }
 }*/

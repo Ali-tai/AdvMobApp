@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../screens/home_screen.dart';
 import '../screens/scan_screen.dart';
 import '../screens/info_screen.dart';
+import '../screens/summary_screen.dart';
 
 class BottomNavBar extends StatelessWidget {
   final String qrData;
@@ -12,22 +13,17 @@ class BottomNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return BottomNavigationBar(
       items: const [
-        BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-        BottomNavigationBarItem(icon: Icon(Icons.qr_code), label: 'Scan'),
-        BottomNavigationBarItem(icon: Icon(Icons.info), label: 'Info'),
+        BottomNavigationBarItem(icon: Icon(Icons.camera_alt), label: 'Scan'),
+        BottomNavigationBarItem(icon: Icon(Icons.note_alt), label: 'Mesure'),
+        BottomNavigationBarItem(icon: Icon(Icons.query_stats), label: 'Info'),
       ],
       onTap: (index) {
         if (index == 0) {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const HomeScreen()));
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const ScanScreen()));
         } else if (index == 1) {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const HomeScreen()));
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const InfoScreen(qrData: '')));
         } else if (index == 2) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => InfoScreen(qrData: qrData),
-            ),
-          );
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const SummaryScreen()));
         }
       },
     );
