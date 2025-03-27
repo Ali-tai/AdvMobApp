@@ -24,4 +24,5 @@ class NutriTrackApp extends StatelessWidget {
       home: const HomeScreen(),
     );
   }
+
 }

@@ -24,8 +24,8 @@ class HomeScreen extends StatelessWidget {
               onPressed: () => SummaryScreen(),
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(Colors.white),
-                  padding: MaterialStatePropertyAll(EdgeInsets.only(left: 80, top: 10, right: 80, bottom: 10)),
-                  side: MaterialStatePropertyAll(BorderSide(color: Colors.black)),
+                padding: MaterialStatePropertyAll(EdgeInsets.only(left: 80, top: 10, right: 80, bottom: 10)),
+                side: MaterialStatePropertyAll(BorderSide(color: Colors.black)),
               ),
               child: const Text(
                 "Get Started",
