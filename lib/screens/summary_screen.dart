@@ -77,7 +77,6 @@ class SummaryScreen extends StatelessWidget {
           ),
         ]
       ),
-      bottomNavigationBar: const BottomNavBar(qrData: ''),
     );
     throw UnimplementedError();
     }

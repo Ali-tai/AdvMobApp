@@ -21,9 +21,10 @@ class ScanScreen extends StatelessWidget {
         body: Center(
           child: Column(
             children: [
+
               Padding(padding: EdgeInsets.only(top: 60, bottom: 400)),
               ElevatedButton(
-                  onPressed: () => InfoScreen(qrData: ''),
+                  onPressed: () => {Navigator.push(context,MaterialPageRoute(builder: (context) => const InfoScreen(qrData: '')))},
                   child: Text(''),
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(Colors.grey),
@@ -34,7 +35,6 @@ class ScanScreen extends StatelessWidget {
             ]
           )
         ),
-        bottomNavigationBar: const BottomNavBar(qrData: ''),
     );
     throw UnimplementedError();
   }

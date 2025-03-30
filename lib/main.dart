@@ -37,13 +37,9 @@ class _MainScreenWithNavigationState extends State<MainScreenWithNavigation> {
   int _selectedIndex = 0;
 
   final List<Widget> _screens = [
-    const HomeScreen(),
     const ScanScreen(),
     const InfoScreen(qrData: "Placeholder QR Data"), // Added qrData
     const SummaryScreen(),
-    const MacrosScreen(),
-    const PersonalInfoScreen(),
-    const AllergiesScreen(),
   ];
 
   void _onItemTapped(int index) {
@@ -58,13 +54,9 @@ class _MainScreenWithNavigationState extends State<MainScreenWithNavigation> {
       body: _screens[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.camera_alt), label: 'Scan'),
           BottomNavigationBarItem(icon: Icon(Icons.info), label: 'Info'),
           BottomNavigationBarItem(icon: Icon(Icons.summarize), label: 'Summary'),
-          BottomNavigationBarItem(icon: Icon(Icons.calculate), label: 'Macros'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Personal'),
-          BottomNavigationBarItem(icon: Icon(Icons.warning), label: 'Allergies'),
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.green,
