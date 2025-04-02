@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-
-import '../widgets/bottom_nav_bar.dart';
+import 'package:provider/provider.dart';
+import '../providers/user_preferences.dart';
 
 class AllergiesScreen extends StatefulWidget {
   const AllergiesScreen({super.key});
@@ -10,19 +10,35 @@ class AllergiesScreen extends StatefulWidget {
 }
 
 class _AllergiesScreenState extends State<AllergiesScreen> {
-  final TextEditingController _allergiesController = TextEditingController(text: "Amandes, Lait, Pain, Noix");
+  late TextEditingController _allergiesController;
+  late UserPreferences userPrefs;
+
+  @override
+  void initState() {
+    super.initState();
+    userPrefs = Provider.of<UserPreferences>(context, listen: false);
+    _allergiesController = TextEditingController(text: userPrefs.allergies.join(', '));
+  }
 
   @override
   void dispose() {
+    userPrefs.setAllergies(_allergiesController.text.split(',').map((e) => e.trim()).toList());
     _allergiesController.dispose();
     super.dispose();
   }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(title: Text("Allergies", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),textAlign: TextAlign.center,)),
+      appBar: AppBar(
+        title: const Text(
+          "Allergies",
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
+          textAlign: TextAlign.center,
+        ),
+      ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
@@ -38,15 +54,12 @@ class _AllergiesScreenState extends State<AllergiesScreen> {
               maxLines: null,
               keyboardType: TextInputType.multiline,
               textAlign: TextAlign.left,
-              decoration: const InputDecoration(
-                border: InputBorder.none,
-              ),
+              decoration: const InputDecoration(border: InputBorder.none),
               style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
           ),
         ],
       ),
-      bottomNavigationBar: const BottomNavBar(qrData: ''),
     );
   }
 }

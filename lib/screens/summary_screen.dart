@@ -1,83 +1,151 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:nutri_tracker/screens/macros_screen.dart';
 import 'package:nutri_tracker/screens/personal_info_screen.dart';
 import 'package:nutri_tracker/screens/allergies_screen.dart';
+import 'package:nutri_tracker/providers/user_preferences.dart';
 import '../widgets/battery_indicator.dart';
-import '../widgets/bottom_nav_bar.dart';
 
-class SummaryScreen extends StatelessWidget {
+class SummaryScreen extends StatefulWidget {
   const SummaryScreen({super.key});
+
+  @override
+  State<SummaryScreen> createState() => _SummaryScreenState();
+}
+
+class _SummaryScreenState extends State<SummaryScreen> {
+  late TextEditingController _allergiesController;
+
+  @override
+  void initState() {
+    super.initState();
+    final userPrefs = Provider.of<UserPreferences>(context, listen: false);
+    _updateAllergiesText(userPrefs.allergies);
+  }
+
+  void _updateAllergiesText(List<String> allergies) {
+    _allergiesController = TextEditingController(
+      text: allergies.isNotEmpty ? "Allergies : ${allergies.join(', ')}" : "Allergies : Aucune",
+    );
+  }
+
+  @override
+  void dispose() {
+    _allergiesController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Résumer'),
+        title: const Text('Résumé'),
         centerTitle: true,
         automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
       ),
-      body: Column(
-        children: [
-          ElevatedButton(
-            onPressed: () {Navigator.push(context,MaterialPageRoute(builder: (context) => const MacrosScreen()),);},
-            style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all(Colors.white),
-              padding: MaterialStatePropertyAll(EdgeInsets.only( top: 40, bottom: 40)),
-              side: MaterialStatePropertyAll(BorderSide(color: Colors.black)),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            /// 🔋 **Indicateurs de macros**
+            Consumer<UserPreferences>(
+              builder: (context, userPrefs, child) {
+                return ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const MacrosScreen()));
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 40),
+                    side: const BorderSide(color: Colors.black),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      BatteryIndicator(level: userPrefs.energy / userPrefs.maxEnergy),
+                      const SizedBox(width: 8),
+                      BatteryIndicator(level: userPrefs.carbs / userPrefs.maxCarbs),
+                      const SizedBox(width: 8),
+                      BatteryIndicator(level: userPrefs.fats / userPrefs.maxFats),
+                      const SizedBox(width: 8),
+                      BatteryIndicator(level: userPrefs.fiber / userPrefs.maxFiber),
+                      const SizedBox(width: 8),
+                      BatteryIndicator(level: userPrefs.protein / userPrefs.maxProtein),
+                      const SizedBox(width: 8),
+                      BatteryIndicator(level: userPrefs.salt / userPrefs.maxSalt),
+                    ],
+                  ),
+                );
+              },
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                BatteryIndicator(level: 0.3),
-                Padding(padding: EdgeInsets.all(8)),
-                BatteryIndicator(level: 0.6),
-                Padding(padding: EdgeInsets.all(8)),
-                BatteryIndicator(level: 1.0),
-                Padding(padding: EdgeInsets.all(8)),
-                BatteryIndicator(level: 0.4),
-                Padding(padding: EdgeInsets.all(8)),
-                BatteryIndicator(level: 0.6),
-                Padding(padding: EdgeInsets.all(8)),
-                BatteryIndicator(level: 0.1),
-              ],
+
+            const SizedBox(height: 10),
+
+            /// 📏 **Poids / Taille / Sexe**
+            Consumer<UserPreferences>(
+              builder: (context, userPrefs, child) {
+                return ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const PersonalInfoScreen()));
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 80),
+                    side: const BorderSide(color: Colors.black),
+                  ),
+                  child: Column(
+                    children: [
+                      Text("Poids :   ${userPrefs.weight} Kg", style: const TextStyle(fontSize: 24)),
+                      const SizedBox(height: 10),
+                      Text("Taille :  ${userPrefs.height} cm", style: const TextStyle(fontSize: 24)),
+                      const SizedBox(height: 10),
+                      Text("Age :  ${userPrefs.age} ans", style: const TextStyle(fontSize: 24)),
+                      const SizedBox(height: 10),
+                      Text("Sexe :  ${userPrefs.gender}", style: const TextStyle(fontSize: 24)),
+                      const SizedBox(height: 10),
+                      Text("Taux d'activité : ${userPrefs.activityLevel.toStringAsFixed(1)}", style: const TextStyle(fontSize: 24)),
+                    ],
+                  ),
+                );
+              },
             ),
-          ),
-          Padding(padding: EdgeInsets.all(10)),
-          ElevatedButton(
-            onPressed: () => {Navigator.push(context,MaterialPageRoute(builder: (context) => const PersonalInfoScreen()))},
-            style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all(Colors.white),
-              padding: MaterialStatePropertyAll(EdgeInsets.only( top: 40, left: 100, right: 100, bottom: 40)),
-              side: MaterialStatePropertyAll(BorderSide(color: Colors.black)),
+
+            const SizedBox(height: 10),
+
+            /// ⚠️ **Allergies**
+            Consumer<UserPreferences>(
+              builder: (context, userPrefs, child) {
+                return ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const AllergiesScreen()));
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
+                    side: const BorderSide(color: Colors.black),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      const Text("Allergies :", style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(20),
+                        child: Text(
+                          userPrefs.allergies.isNotEmpty ? userPrefs.allergies.join(', ') : "Aucune",
+                          textAlign: TextAlign.left,
+                          style: const TextStyle(fontSize: 20),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
             ),
-            child: Column(
-                  children: [
-                    Text("Poids :   " + 85.toString() + " Kg", style: TextStyle(fontSize: 27)),
-                    Padding(padding: EdgeInsets.all(10)),
-                    Text("Taille : 	" + 180.toString() + " cm", style: TextStyle(fontSize: 27)),
-                  ]
-                )
-          ),
-          Padding(padding: EdgeInsets.all(10)),
-          ElevatedButton(
-              onPressed: () => {Navigator.push(context,MaterialPageRoute(builder: (context) => const AllergiesScreen()))},
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.white),
-                padding: MaterialStatePropertyAll(EdgeInsets.only( top: 20, left: 30, right: 30, bottom: 60)),
-                side: MaterialStatePropertyAll(BorderSide(color: Colors.black)),
-              ),
-              child: Column(
-                  children: [
-                    Text("Allergies :" , style: TextStyle(fontSize: 30)),
-                    Text("Liste des allergies, avec des, virgules, qui séparent, les allergies 	" , style: TextStyle(fontSize: 17)),
-                  ]
-              )
-          ),
-        ]
+          ],
+        ),
       ),
     );
-    throw UnimplementedError();
-    }
   }
+}

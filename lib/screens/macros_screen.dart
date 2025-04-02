@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../widgets/battery_indicator.dart';
 import '../widgets/bottom_nav_bar.dart';
+import '../providers/user_preferences.dart';
 
 class MacrosScreen extends StatelessWidget {
   const MacrosScreen({super.key});
@@ -9,65 +11,54 @@ class MacrosScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Macros'), centerTitle: true),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Row(
+      body: Consumer<UserPreferences>(
+        builder: (context, userPrefs, child) {
+          return Center(
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                Column(
+              children: [
+                /// 🔋 **Première rangée : Énergie, Glucides, Lipides**
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("Energie", style: TextStyle(fontSize: 20)),
-                    BatteryIndicator(level: 0.3),
+                    _macroColumn("Énergie", userPrefs.energy,userPrefs.maxEnergy),
+                    const SizedBox(width: 60),
+                    _macroColumn("Glucides", userPrefs.carbs,userPrefs.maxCarbs),
+                    const SizedBox(width: 60),
+                    _macroColumn("Lipides", userPrefs.fats,userPrefs.maxFats),
                   ],
                 ),
-                SizedBox(width: 60),
-                Column(
+
+                const SizedBox(height: 100),
+
+                /// 🔋 **Deuxième rangée : Fibres, Protéines, Sel**
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("Glucides", style: TextStyle(fontSize: 20)),
-                    BatteryIndicator(level: 0.6),
-                  ],
-                ),
-                SizedBox(width: 60),
-                Column(
-                  children: [
-                    Text("Lipides", style: TextStyle(fontSize: 20)),
-                    BatteryIndicator(level: 1.0),
+                    _macroColumn("Fibres", userPrefs.fiber,userPrefs.maxFiber),
+                    const SizedBox(width: 60),
+                    _macroColumn("Protéines", userPrefs.protein,userPrefs.maxProtein),
+                    const SizedBox(width: 60),
+                    _macroColumn("Sel", userPrefs.salt,userPrefs.maxSalt),
                   ],
                 ),
               ],
             ),
-            SizedBox(height: 100),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                Column(
-                  children: [
-                    Text("Fibres", style: TextStyle(fontSize: 20)),
-                    BatteryIndicator(level: 0.4),
-                  ],
-                ),
-                SizedBox(width: 60),
-                Column(
-                  children: [
-                    Text("Protéines", style: TextStyle(fontSize: 20)),
-                    BatteryIndicator(level: 0.6),
-                  ],
-                ),
-                SizedBox(width: 60),
-                Column(
-                  children: [
-                    Text("Sel", style: TextStyle(fontSize: 20)),
-                    BatteryIndicator(level: 0.1),
-                  ],
-                ),
-              ],
-            ),
-          ],
-        ),
+          );
+        },
       ),
-      bottomNavigationBar: const BottomNavBar(qrData: ''),
+    );
+  }
+
+  /// **Widget helper pour éviter la répétition**
+  Widget _macroColumn(String label, int level, int max) {
+    return Column(
+      children: [
+        Text(label, style: const TextStyle(fontSize: 20)),
+        Text(max.toString()),
+        BatteryIndicator(level: (level/max).toDouble()),
+        Text(level.toString()),
+      ],
     );
   }
 }
