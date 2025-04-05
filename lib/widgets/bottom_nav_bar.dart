@@ -21,7 +21,7 @@ class BottomNavBar extends StatelessWidget {
         if (index == 0) {
           Navigator.push(context, MaterialPageRoute(builder: (context) => const ScanScreen()));
         } else if (index == 1) {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const InfoScreen(qrData: '')));
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const InfoScreen(productData: {})));
         } else if (index == 2) {
           Navigator.push(context, MaterialPageRoute(builder: (context) => const SummaryScreen()));
         }

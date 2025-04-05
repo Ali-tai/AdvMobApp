@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:nutri_tracker/providers/user_preferences.dart';
-import 'screens/home_screen.dart';
+//import 'screens/home_screen.dart';
 import 'screens/scan_screen.dart';
 import 'screens/info_screen.dart';
 import 'screens/summary_screen.dart';
@@ -43,11 +43,11 @@ class _MainScreenWithNavigationState extends State<MainScreenWithNavigation> {
 
   @override
   Widget build(BuildContext context) {
-    final userPrefs = Provider.of<UserPreferences>(context);
+    //final userPrefs = Provider.of<UserPreferences>(context);
 
     final List<Widget> _screens = [
       const ScanScreen(),
-      const InfoScreen(qrData: "Données QR"), // Placeholder QR data
+      const InfoScreen(productData: {}), // Empty map for now, // Placeholder QR data
       const SummaryScreen(),
     ];
 

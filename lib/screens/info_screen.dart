@@ -1,37 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/material.dart';
 
-class InfoScreen extends StatefulWidget {
-  final String qrData;
+class InfoScreen extends StatelessWidget {
+  final Map<String, dynamic> productData;
 
-  const InfoScreen({super.key, required this.qrData});
-
-  @override
-  _InfoScreenState createState() => _InfoScreenState();
-}
-
-class _InfoScreenState extends State<InfoScreen> {
-  String savedData = '';
-
-  @override
-  void initState() {
-    super.initState();
-    _loadData();
-  }
-
-  // Save scanned QR data
-  Future<void> _saveData(String data) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('qrData', data);
-  }
-
-  // Load saved QR data
-  Future<void> _loadData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      savedData = prefs.getString('qrData') ?? 'No previous scan';
-    });
-  }
+  const InfoScreen({super.key, required this.productData});
 
   @override
   Widget build(BuildContext context) {
@@ -42,19 +15,15 @@ class _InfoScreenState extends State<InfoScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Scanned Data: ${widget.qrData}', style: const TextStyle(fontSize: 18)),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                _saveData(widget.qrData);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Data Saved')),
-                );
-              },
-              child: const Text('Save Data'),
+            Text(
+              'Product Name: ${productData['product']['product_name'] ?? 'Unknown'}',
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 20),
-            Text('Previously Scanned: $savedData', style: const TextStyle(fontSize: 18)),
+            const SizedBox(height: 10),
+            Text(
+              'Nutriments: ${productData['product']['nutriments'].toString()}',
+              style: const TextStyle(fontSize: 16),
+            ),
           ],
         ),
       ),
