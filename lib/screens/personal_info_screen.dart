@@ -69,7 +69,7 @@ class PersonalInfoScreen extends StatelessWidget {
                         textAlign: TextAlign.center,
                         decoration: const InputDecoration(border: InputBorder.none),
                         onSubmitted: (value) {
-                          final newHeight = double.tryParse(value);
+                          final newHeight = int.tryParse(value);
                           if (newHeight != null) {
                             userPrefs.setHeight(newHeight);
                           }

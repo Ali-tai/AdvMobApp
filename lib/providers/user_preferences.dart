@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class UserPreferences extends ChangeNotifier {
   // ⚖️ **Données utilisateur**
   double _weight = 80.0;
-  double _height = 180.0;
+  int _height = 180;
   String _gender = "homme"; // "homme" ou "femme"
   int _age = 25;
   double _activityLevel = 1.55; // 1.2 - 1.9
@@ -28,7 +28,7 @@ class UserPreferences extends ChangeNotifier {
 
   // **Getters**
   double get weight => _weight;
-  double get height => _height;
+  int get height => _height;
   String get gender => _gender;
   int get age => _age;
   double get activityLevel => _activityLevel;
@@ -56,7 +56,7 @@ class UserPreferences extends ChangeNotifier {
   Future<void> _loadPreferences() async {
     final prefs = await SharedPreferences.getInstance();
     _weight = prefs.getDouble('weight') ?? 80.0;
-    _height = prefs.getDouble('height') ?? 180.0;
+    _height = prefs.getInt('height') ?? 180;
     _gender = prefs.getString('gender') ?? "homme";
     _activityLevel = prefs.getDouble('activityLevel') ?? 1.55;
     _age = prefs.getInt('age') ?? 25;
@@ -88,10 +88,10 @@ class UserPreferences extends ChangeNotifier {
     calculateNeeds();
   }
 
-  Future<void> setHeight(double newHeight) async {
+  Future<void> setHeight(int newHeight) async {
     _height = newHeight;
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setDouble('height', newHeight);
+    await prefs.setInt('height', newHeight);
     calculateNeeds();
   }
 
