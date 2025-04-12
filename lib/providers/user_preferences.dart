@@ -8,6 +8,7 @@ class UserPreferences extends ChangeNotifier {
   String _gender = "homme"; // "homme" ou "femme"
   int _age = 25;
   double _activityLevel = 1.55; // 1.2 - 1.9
+  String _lastResetDate = DateTime(2000, 1, 1).toIso8601String();
   List<String> _allergies = [];
 
   // 🔵 **Valeurs actuelles consommées**
@@ -32,6 +33,7 @@ class UserPreferences extends ChangeNotifier {
   String get gender => _gender;
   int get age => _age;
   double get activityLevel => _activityLevel;
+  String get lastResetDate => _lastResetDate;
   List<String> get allergies => _allergies;
 
   int get energy => _energy;
@@ -60,6 +62,7 @@ class UserPreferences extends ChangeNotifier {
     _gender = prefs.getString('gender') ?? "homme";
     _activityLevel = prefs.getDouble('activityLevel') ?? 1.55;
     _age = prefs.getInt('age') ?? 25;
+    _lastResetDate = prefs.getString(_lastResetDate) ?? DateTime(2000, 1, 1).toIso8601String();
     _allergies = prefs.getStringList('allergies') ?? [];
 
     _energy = prefs.getInt('energy') ?? 0;
@@ -77,7 +80,21 @@ class UserPreferences extends ChangeNotifier {
     _maxSalt = prefs.getInt('maxSalt') ?? 5;
 
     calculateNeeds(); // Recalculer les besoins en fonction des données actuelles
-    resetDailyConsumption(); // Réinitialiser la consommation quotidienne
+    if (_lastResetDate != null) {
+      final ResetDate = DateTime.tryParse(_lastResetDate);
+      if (ResetDate != null &&
+          ResetDate.year < DateTime.now().year ||
+          ResetDate!.month < DateTime.now().month ||
+          ResetDate.day < DateTime.now().day) {
+        resetDailyConsumption();
+        await prefs.setString(_lastResetDate, DateTime.now().toIso8601String());
+      }
+    } else {
+      // Première utilisation ou date non trouvée, on initialise
+      resetDailyConsumption();
+      await prefs.setString(_lastResetDate, DateTime.now().toIso8601String());
+    }
+    notifyListeners();
   }
 
   /// ⚖️ **Mettre à jour les données utilisateur**
@@ -159,34 +176,71 @@ class UserPreferences extends ChangeNotifier {
     await prefs.setInt('maxSalt', _maxSalt);
   }
 
+  Future<void> setEnergy(int value) async{
+    _energy = value;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('energy', value);
+  }
+  Future<void> setCarbs(int value) async{
+    _carbs = value;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('carbs', value);
+  }
+  Future<void> setFats(int value) async{
+    _fats = value;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('fats', value);
+  }
+  Future<void> setFiber(int value) async{
+    _fiber = value;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('fiber', value);
+  }
+  Future<void> setProtein(int value) async{
+    _protein = value;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('protein', value);
+  }
+  Future<void> setSalt(int value) async{
+    _salt = value;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('salt', value);
+  }
+
   /// ➕ **Ajouter à la consommation journalière**
   void addEnergy(int value) {
     _energy += value;
+    setEnergy(_energy);
     notifyListeners();
   }
 
   void addCarbs(int value) {
     _carbs += value;
+    setCarbs(_carbs);
     notifyListeners();
   }
 
   void addFats(int value) {
     _fats += value;
+    setFats(_fats);
     notifyListeners();
   }
 
   void addFiber(int value) {
     _fiber += value;
+    setFiber(_fiber);
     notifyListeners();
   }
 
   void addProtein(int value) {
     _protein += value;
+    setProtein(_protein);
     notifyListeners();
   }
 
   void addSalt(int value) {
     _salt += value;
+    setSalt(_salt);
     notifyListeners();
   }
 

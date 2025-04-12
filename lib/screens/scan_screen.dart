@@ -9,12 +9,12 @@ class ScanScreen extends StatefulWidget {
   @override
   State<ScanScreen> createState() => _ScanScreenState();
 }
-
 class _ScanScreenState extends State<ScanScreen> {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   QRViewController? controller;
   String qrText = 'Scanne un code QR ou un code-barres !';
   final OpenFoodFactsService _openFoodFactsService = OpenFoodFactsService();
+  bool _isProcessing = false;
 
   @override
   void dispose() {
@@ -48,24 +48,37 @@ class _ScanScreenState extends State<ScanScreen> {
 
   void _onQRViewCreated(QRViewController controller) {
     this.controller = controller;
-    controller.scannedDataStream.listen((scanData) {
-      setState(() {
-        qrText = scanData.code ?? 'Impossible de lire le code QR ou le code-barres !';
-        _fetchProductData(qrText);
-      });
+    controller.scannedDataStream.listen((scanData) async {
+      if (_isProcessing) return;
+      _isProcessing = true;
+
+      final code = scanData.code;
+      if (code != null) {
+        setState(() {
+          qrText = code;
+        });
+        await _fetchProductData(code);
+      }
+
+      _isProcessing = false;
     });
   }
 
-  void _fetchProductData(String barcode) async {
+  Future<void> _fetchProductData(String barcode) async {
     try {
       final productData = await _openFoodFactsService.getProduct(barcode);
-      Navigator.push(
+      if (!mounted) return;
+      if (productData == null || productData.isEmpty || productData['product'] == null) return;
+      await Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => InfoScreen(productData: productData),
         ),
-      );;
+      );
+
+      _isProcessing = false;
     } catch (e) {
+      if (!mounted) return;
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
@@ -79,6 +92,7 @@ class _ScanScreenState extends State<ScanScreen> {
           ],
         ),
       );
+      _isProcessing = false;
     }
   }
 }

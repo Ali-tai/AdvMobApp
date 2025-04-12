@@ -96,15 +96,15 @@ class _SummaryScreenState extends State<SummaryScreen> {
                   ),
                   child: Column(
                     children: [
-                      Text("Poids :   ${userPrefs.weight} Kg", style: const TextStyle(fontSize: 24)),
+                      Text("Poids :   ${userPrefs.weight} Kg", style: const TextStyle(fontSize: 22)),
                       const SizedBox(height: 10),
-                      Text("Taille :  ${userPrefs.height} cm", style: const TextStyle(fontSize: 24)),
+                      Text("Taille :  ${userPrefs.height} cm", style: const TextStyle(fontSize: 22)),
                       const SizedBox(height: 10),
-                      Text("Age :  ${userPrefs.age} ans", style: const TextStyle(fontSize: 24)),
+                      Text("Age :  ${userPrefs.age} ans", style: const TextStyle(fontSize: 22)),
                       const SizedBox(height: 10),
-                      Text("Sexe :  ${userPrefs.gender}", style: const TextStyle(fontSize: 24)),
+                      Text("Sexe :  ${userPrefs.gender}", style: const TextStyle(fontSize: 22)),
                       const SizedBox(height: 10),
-                      Text("Taux d'activité : ${userPrefs.activityLevel.toStringAsFixed(1)}", style: const TextStyle(fontSize: 24)),
+                      Text("Activité : ${userPrefs.activityLevel.toStringAsFixed(1)}", style: const TextStyle(fontSize: 22)),
                     ],
                   ),
                 );
@@ -121,14 +121,16 @@ class _SummaryScreenState extends State<SummaryScreen> {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => const AllergiesScreen()));
                   },
                   style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(100),
+                    ),
                     backgroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
                     side: const BorderSide(color: Colors.black),
                   ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      const Text("Allergies :", style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
+                      const Text("Allergies :", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
                       Container(
                         width: double.infinity,
                         padding: const EdgeInsets.all(20),
