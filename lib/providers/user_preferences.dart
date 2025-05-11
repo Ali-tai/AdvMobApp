@@ -287,10 +287,12 @@ class UserPreferences extends ChangeNotifier {
   Color get textColor => _themeMode == ThemeMode.dark ? Colors.white : Colors.black;
 
   // Méthode pour obtenir la couleur de l'appBar en fonction du mode
-  Color get appBarColor => _themeMode == ThemeMode.dark ? Colors.grey : Colors.blue;
+  Color get appBarColor => _themeMode == ThemeMode.dark ? Colors.grey : Colors.white;
 
   // Méthode pour obtenir la couleur des boutons en fonction du mode
-  Color get buttonColor => _themeMode == ThemeMode.dark ? Colors.blueGrey : Colors.blue;
+  Color get buttonColor => _themeMode == ThemeMode.dark ? Colors.blueGrey : Colors.white;
 
   Color get genderColor => _gender == "homme" ? Colors.blue : Colors.pink;
+
+  Color get iconColor => _themeMode == ThemeMode.dark ? Colors.black : Colors.grey;
 }

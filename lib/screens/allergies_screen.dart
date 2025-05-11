@@ -43,6 +43,7 @@ class _AllergiesScreenState extends State<AllergiesScreen> {
           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
         ),
         centerTitle: true,
+        backgroundColor: userPrefs.backgroundColor,
       ),
       body: SafeArea(
         child: SingleChildScrollView(

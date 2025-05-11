@@ -31,13 +31,13 @@ class _MainScreenWithNavigationState extends State<MainScreenWithNavigation> {
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: userPrefs.appBarColor,
         items: [
-          BottomNavigationBarItem(icon: Icon(Icons.camera_alt, color: userPrefs.backgroundColor), label: localizations.scanQRTitle, backgroundColor: userPrefs.backgroundColor),
-          BottomNavigationBarItem(icon: Icon(Icons.info, color: userPrefs.backgroundColor), label: localizations.product, backgroundColor: userPrefs.backgroundColor),
-          BottomNavigationBarItem(icon: Icon(Icons.summarize, color: userPrefs.backgroundColor), label: localizations.summaryTitle, backgroundColor: userPrefs.backgroundColor),
+          BottomNavigationBarItem(icon: Icon(Icons.camera_alt, color: _selectedIndex == 0 ? userPrefs.textColor : userPrefs.iconColor), label: localizations.scanQRTitle, backgroundColor: userPrefs.iconColor),
+          BottomNavigationBarItem(icon: Icon(Icons.info, color: _selectedIndex == 1 ? userPrefs.textColor : userPrefs.iconColor), label: localizations.product, backgroundColor: userPrefs.iconColor),
+          BottomNavigationBarItem(icon: Icon(Icons.summarize, color: _selectedIndex == 2 ? userPrefs.textColor : userPrefs.iconColor), label: localizations.summaryTitle, backgroundColor: userPrefs.iconColor),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: userPrefs.backgroundColor,
-        unselectedItemColor: userPrefs.textColor,
+        selectedItemColor: userPrefs.textColor,
+        unselectedItemColor: userPrefs.iconColor,
         onTap: (index) {
           setState(() {
             _selectedIndex = index;

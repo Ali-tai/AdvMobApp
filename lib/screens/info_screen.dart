@@ -47,6 +47,7 @@ class _InfoScreenState extends State<InfoScreen> {
       appBar: AppBar(
           title: Text(localizations.product, style: TextStyle(color: userPrefs.textColor, fontSize: 24)),
           backgroundColor: userPrefs.appBarColor,
+          centerTitle: true,
       ),
       resizeToAvoidBottomInset: true,
       body: Padding(

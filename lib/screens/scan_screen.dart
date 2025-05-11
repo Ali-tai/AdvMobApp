@@ -35,7 +35,8 @@ class _ScanScreenState extends State<ScanScreen> {
       backgroundColor: userPrefs.backgroundColor,
       appBar: AppBar(
           title: Text(localizations.scanQRTitle, style: TextStyle(color: userPrefs.textColor, fontSize: 24)),
-          backgroundColor: userPrefs.appBarColor
+          backgroundColor: userPrefs.appBarColor,
+          centerTitle: true,
       ),
       body: Column(
         children: <Widget>[
