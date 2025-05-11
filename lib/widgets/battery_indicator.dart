@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 
 class BatteryIndicator extends StatelessWidget {
   final double level;
+  final Color bordercolor;
 
-  const BatteryIndicator({super.key, required this.level});
+  const BatteryIndicator({super.key, required this.level, required this.bordercolor});
 
   Color getColor() {
     if (level <= 0.5) {
@@ -24,7 +25,7 @@ class BatteryIndicator extends StatelessWidget {
       height: 140,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.black, width: 2),
+        border: Border.all(color: bordercolor, width: 2),
       ),
       child: Stack(
         alignment: Alignment.bottomCenter,

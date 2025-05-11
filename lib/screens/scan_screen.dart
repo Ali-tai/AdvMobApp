@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
+import '../providers/user_preferences.dart';
 import '../services/open_food_facts_service.dart';
 import 'info_screen.dart';
 
@@ -9,10 +12,11 @@ class ScanScreen extends StatefulWidget {
   @override
   State<ScanScreen> createState() => _ScanScreenState();
 }
+
 class _ScanScreenState extends State<ScanScreen> {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   QRViewController? controller;
-  String qrText = 'Scanne un code QR ou un code-barres !';
+  String qrText = '';
   final OpenFoodFactsService _openFoodFactsService = OpenFoodFactsService();
   bool _isProcessing = false;
 
@@ -24,8 +28,15 @@ class _ScanScreenState extends State<ScanScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
+    final userPrefs = Provider.of<UserPreferences>(context);
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Scan QR Code')),
+      backgroundColor: userPrefs.backgroundColor,
+      appBar: AppBar(
+          title: Text(localizations.scanQRTitle, style: TextStyle(color: userPrefs.textColor, fontSize: 24)),
+          backgroundColor: userPrefs.appBarColor
+      ),
       body: Column(
         children: <Widget>[
           Expanded(
@@ -38,7 +49,7 @@ class _ScanScreenState extends State<ScanScreen> {
           Expanded(
             flex: 1,
             child: Center(
-              child: Text(qrText),
+              child: Text(qrText.isEmpty ? localizations.scanQRCode : qrText, style: TextStyle(color: userPrefs.textColor, fontSize: 20)),
             ),
           ),
         ],
@@ -79,11 +90,13 @@ class _ScanScreenState extends State<ScanScreen> {
       _isProcessing = false;
     } catch (e) {
       if (!mounted) return;
+      final localizations = AppLocalizations.of(context)!;
+      final userPrefs = Provider.of<UserPreferences>(context, listen: false);
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text('Erreur'),
-          content: Text(e.toString()),
+          title: Text(localizations.errorTitle, style: TextStyle(color: userPrefs.textColor)),
+          content: Text(localizations.errorContent(e.toString())),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),

@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserPreferences extends ChangeNotifier {
@@ -10,6 +11,8 @@ class UserPreferences extends ChangeNotifier {
   double _activityLevel = 1.55; // 1.2 - 1.9
   String _lastResetDate = DateTime(2000, 1, 1).toIso8601String();
   List<String> _allergies = [];
+  String _language = "fr";
+  ThemeMode _themeMode = ThemeMode.system;
 
   // 🔵 **Valeurs actuelles consommées**
   int _energy = 0;
@@ -35,6 +38,8 @@ class UserPreferences extends ChangeNotifier {
   double get activityLevel => _activityLevel;
   String get lastResetDate => _lastResetDate;
   List<String> get allergies => _allergies;
+  String get language => _language;
+  ThemeMode get themeMode => _themeMode;
 
   int get energy => _energy;
   int get carbs => _carbs;
@@ -64,6 +69,8 @@ class UserPreferences extends ChangeNotifier {
     _age = prefs.getInt('age') ?? 25;
     _lastResetDate = prefs.getString(_lastResetDate) ?? DateTime(2000, 1, 1).toIso8601String();
     _allergies = prefs.getStringList('allergies') ?? [];
+    _language = prefs.getString('language') ?? "fr";
+    _themeMode = ThemeMode.values[prefs.getInt('themeMode') ?? 0];
 
     _energy = prefs.getInt('energy') ?? 0;
     _carbs = prefs.getInt('carbs') ?? 0;
@@ -137,6 +144,19 @@ class UserPreferences extends ChangeNotifier {
     _allergies = newAllergies;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setStringList('allergies', newAllergies);
+    notifyListeners();
+  }
+
+  Future<void> setLanguage(String newLanguage) async {
+    _language = newLanguage;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('language', newLanguage);
+    notifyListeners();
+  }
+  Future<void> setThemeMode(ThemeMode newThemeMode) async {
+    _themeMode = newThemeMode;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('themeMode', newThemeMode.index);
     notifyListeners();
   }
 
@@ -254,4 +274,23 @@ class UserPreferences extends ChangeNotifier {
     _salt = 0;
     notifyListeners();
   }
+
+  void toggleTheme() {
+    _themeMode = _themeMode == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
+    notifyListeners();
+  }
+
+  // Méthode pour obtenir la couleur de fond en fonction du mode
+  Color get backgroundColor => _themeMode == ThemeMode.dark ? Colors.black : Colors.white;
+
+  // Méthode pour obtenir la couleur du texte en fonction du mode
+  Color get textColor => _themeMode == ThemeMode.dark ? Colors.white : Colors.black;
+
+  // Méthode pour obtenir la couleur de l'appBar en fonction du mode
+  Color get appBarColor => _themeMode == ThemeMode.dark ? Colors.grey : Colors.blue;
+
+  // Méthode pour obtenir la couleur des boutons en fonction du mode
+  Color get buttonColor => _themeMode == ThemeMode.dark ? Colors.blueGrey : Colors.blue;
+
+  Color get genderColor => _gender == "homme" ? Colors.blue : Colors.pink;
 }

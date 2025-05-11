@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // <-- Ajouté
 import '../widgets/battery_indicator.dart';
 import '../providers/user_preferences.dart';
 
@@ -8,8 +9,16 @@ class MacrosScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!; // <-- Ajouté pour récupérer les traductions
+    final userPrefs = Provider.of<UserPreferences>(context);
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Macros'), centerTitle: true),
+      backgroundColor: userPrefs.backgroundColor,
+      appBar: AppBar(
+        title: Text(localizations.energy, style: TextStyle(color: userPrefs.textColor, fontSize: 24)),
+        backgroundColor: userPrefs.appBarColor,
+        centerTitle: true,
+      ),
       body: Consumer<UserPreferences>(
         builder: (context, userPrefs, child) {
           return SingleChildScrollView(
@@ -22,11 +31,11 @@ class MacrosScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      _macroColumn("Énergie", userPrefs.energy, userPrefs.maxEnergy),
+                      _macroColumn(localizations.energy, userPrefs.energy, userPrefs.maxEnergy, userPrefs.textColor),
                       const SizedBox(width: 35),
-                      _macroColumn("Glucides", userPrefs.carbs, userPrefs.maxCarbs),
+                      _macroColumn(localizations.carbs, userPrefs.carbs, userPrefs.maxCarbs, userPrefs.textColor),
                       const SizedBox(width: 35),
-                      _macroColumn("Lipides", userPrefs.fats, userPrefs.maxFats),
+                      _macroColumn(localizations.fats, userPrefs.fats, userPrefs.maxFats, userPrefs.textColor),
                     ],
                   ),
 
@@ -36,11 +45,11 @@ class MacrosScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      _macroColumn("Fibres", userPrefs.fiber, userPrefs.maxFiber),
+                      _macroColumn(localizations.fiber, userPrefs.fiber, userPrefs.maxFiber, userPrefs.textColor), // <-- Traduction ici
                       const SizedBox(width: 35),
-                      _macroColumn("Protéines", userPrefs.protein, userPrefs.maxProtein),
+                      _macroColumn(localizations.proteins, userPrefs.protein, userPrefs.maxProtein, userPrefs.textColor), // <-- Traduction ici
                       const SizedBox(width: 35),
-                      _macroColumn("Sel", userPrefs.salt, userPrefs.maxSalt),
+                      _macroColumn(localizations.salt, userPrefs.salt, userPrefs.maxSalt, userPrefs.textColor), // <-- Traduction ici
                     ],
                   ),
                 ],
@@ -53,13 +62,13 @@ class MacrosScreen extends StatelessWidget {
   }
 
   /// Widget helper
-  Widget _macroColumn(String label, int level, int max) {
+  Widget _macroColumn(String label, int level, int max, Color color) {
     return Column(
       children: [
-        Text(label, style: const TextStyle(fontSize: 20)),
-        Text(max.toString()),
-        BatteryIndicator(level: (level / max).toDouble()),
-        Text(level.toString()),
+        Text(label, style: TextStyle(color: color, fontSize: 20)),
+        Text(max.toString(), style: TextStyle(color: color, fontSize: 20)),
+        BatteryIndicator(level: (level / max).toDouble(), bordercolor: color),
+        Text(level.toString(), style: TextStyle(color: color, fontSize: 20)),
       ],
     );
   }

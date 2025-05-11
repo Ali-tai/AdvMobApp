@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // <-- Ajouté
 import '../providers/user_preferences.dart';
 
 class AllergiesScreen extends StatefulWidget {
@@ -31,13 +32,15 @@ class _AllergiesScreenState extends State<AllergiesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
+
     return Scaffold(
-      backgroundColor: Colors.white,
-      resizeToAvoidBottomInset: true, // important pour clavier
+      backgroundColor: userPrefs.backgroundColor,
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
-        title: const Text(
-          "Allergies",
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
+        title: Text(
+          localizations.allergiesTitle,
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
         ),
         centerTitle: true,
       ),
@@ -51,15 +54,15 @@ class _AllergiesScreenState extends State<AllergiesScreen> {
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: Colors.black),
+                  border: Border.all(color: userPrefs.textColor),
                 ),
                 child: TextField(
                   controller: _allergiesController,
                   maxLines: null,
                   keyboardType: TextInputType.multiline,
                   textAlign: TextAlign.left,
-                  decoration: const InputDecoration.collapsed(
-                    hintText: "Entrez vos allergies (séparées par des virgules)",
+                  decoration: InputDecoration.collapsed(
+                    hintText: localizations.allergiesHint,
                   ),
                   style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),

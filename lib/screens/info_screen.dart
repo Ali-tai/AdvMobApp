@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // <-- Ajouté
 import 'package:nutri_tracker/providers/user_preferences.dart';
 import 'package:nutri_tracker/providers/product.dart';
 
@@ -23,49 +24,55 @@ class _InfoScreenState extends State<InfoScreen> {
     product = Product.fromMap(widget.productData);
   }
 
-  Map<String, double> calculatePerQuantity(int grams) {
+  Map<String, double> calculatePerQuantity(int grams, AppLocalizations localizations) {
     double factor = grams / 100;
     return {
-      'Énergie': product.energy * factor,
-      'Glucides': product.carbs * factor,
-      'Lipides': product.fats * factor,
-      'Fibres': product.fiber * factor,
-      'Protéines': product.proteins * factor,
-      'Sel': product.salt * factor,
+      localizations.energy : product.energy * factor,
+      localizations.carbs: product.carbs * factor,
+      localizations.fats: product.fats * factor,
+      localizations.fiber: product.fiber * factor,
+      localizations.proteins: product.proteins * factor,
+      localizations.salt: product.salt * factor,
     };
   }
 
   @override
   Widget build(BuildContext context) {
-    final Map<String, double> values = calculatePerQuantity(quantity);
+    final localizations = AppLocalizations.of(context)!;
+    final userPrefs = Provider.of<UserPreferences>(context);
+    final Map<String, double> values = calculatePerQuantity(quantity,localizations);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Informations nutritionnelles')),
-      resizeToAvoidBottomInset: true, // Ajouté ici
+      backgroundColor: userPrefs.backgroundColor,
+      appBar: AppBar(
+          title: Text(localizations.product, style: TextStyle(color: userPrefs.textColor, fontSize: 24)),
+          backgroundColor: userPrefs.appBarColor,
+      ),
+      resizeToAvoidBottomInset: true,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView( // Ajouté ici
+        child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Produit : ${product.name}',
-                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                '${localizations.product} : ${product.name}',
+                style: TextStyle(color: userPrefs.textColor, fontSize: 20, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 20),
 
               /// 🔢 Zone d’entrée pour la quantité
               Row(
                 children: [
-                  const Text('Quantité (g) : ', style: TextStyle(fontSize: 16)),
+                  Text('${localizations.quantity} : ', style: TextStyle(color: userPrefs.textColor, fontSize: 16)),
                   Expanded(
                     child: TextField(
                       controller: _quantityController,
                       keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(
-                        hintText: 'Entrez la quantité en g',
-                        border: OutlineInputBorder(),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                      decoration: InputDecoration(
+                        hintText: localizations.enterQuantity,
+                        border: const OutlineInputBorder(),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 10),
                       ),
                       onChanged: (value) {
                         setState(() {
@@ -81,7 +88,7 @@ class _InfoScreenState extends State<InfoScreen> {
               /// 📊 Affichage des valeurs nutritionnelles calculées
               ...values.entries.map((entry) => Padding(
                 padding: const EdgeInsets.symmetric(vertical: 4),
-                child: Text('${entry.key} : ${entry.value.toStringAsFixed(1)}'),
+                child: Text('${entry.key}: ${entry.value.toStringAsFixed(1)}', style: TextStyle(color: userPrefs.textColor, fontSize: 16)),
               )),
 
               const SizedBox(height: 30),
@@ -91,7 +98,7 @@ class _InfoScreenState extends State<InfoScreen> {
                 onPressed: () {
                   final userPrefs = Provider.of<UserPreferences>(context, listen: false);
 
-                  final nutriments = calculatePerQuantity(quantity);
+                  final nutriments = calculatePerQuantity(quantity, localizations);
 
                   userPrefs.addEnergy(nutriments['Énergie']!.toInt());
                   userPrefs.addCarbs(nutriments['Glucides']!.toInt());
@@ -101,13 +108,15 @@ class _InfoScreenState extends State<InfoScreen> {
                   userPrefs.addSalt(nutriments['Sel']!.toInt());
 
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Valeurs nutritionnelles ajoutées !')),
+                    SnackBar(content: Text(localizations.valuesAdded)),
                   );
                 },
-                icon: const Icon(Icons.add),
-                label: const Text('Ajouter'),
+                icon: Icon(Icons.add, color: userPrefs.textColor),
+                label: Text(localizations.addValues, style: TextStyle(color: userPrefs.textColor, fontSize: 16)),
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                  backgroundColor: userPrefs.buttonColor,
+                  side: BorderSide(color: userPrefs.textColor),
                 ),
               ),
             ],
