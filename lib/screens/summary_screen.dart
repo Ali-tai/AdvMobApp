@@ -15,26 +15,7 @@ class SummaryScreen extends StatefulWidget {
 }
 
 class _SummaryScreenState extends State<SummaryScreen> {
-  late TextEditingController _allergiesController;
-
-  @override
-  void initState() {
-    super.initState();
-    final userPrefs = Provider.of<UserPreferences>(context, listen: false);
-    _updateAllergiesText(userPrefs.allergies);
-  }
-
-  void _updateAllergiesText(List<String> allergies) {
-    _allergiesController = TextEditingController(
-      text: allergies.isNotEmpty ? "Allergies : ${allergies.join(', ')}" : "Allergies : Aucune",
-    );
-  }
-
-  @override
-  void dispose() {
-    _allergiesController.dispose();
-    super.dispose();
-  }
+  // No need for a TextEditingController here as we are just displaying text.
 
   @override
   Widget build(BuildContext context) {
@@ -123,6 +104,12 @@ class _SummaryScreenState extends State<SummaryScreen> {
             /// ⚠️ **Allergies**
             Consumer<UserPreferences>(
               builder: (context, userPrefs, child) {
+                // Get the current locale's translations
+                final currentLocalizations = AppLocalizations.of(context)!;
+
+                // Translate the allergy keys to the current locale
+                List<String> translatedAllergies = userPrefs.allergies.map((key) => _getAllergyLabel(currentLocalizations, key)).toList();
+
                 return ElevatedButton(
                   onPressed: () {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => AllergiesScreen()));
@@ -142,7 +129,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                         width: double.infinity,
                         padding: EdgeInsets.all(20),
                         child: Text(
-                          userPrefs.allergies.isNotEmpty ? userPrefs.allergies.join(', ') : localizations.noAllergies,
+                          translatedAllergies.isNotEmpty ? translatedAllergies.join(', ') : localizations.noAllergies,
                           textAlign: TextAlign.left,
                           style: TextStyle(color: userPrefs.textColor, fontSize: 20),
                         ),
@@ -156,5 +143,59 @@ class _SummaryScreenState extends State<SummaryScreen> {
         ),
       ),
     );
+  }
+
+  // Helper function to get the translated allergy label based on the key
+  String _getAllergyLabel(AppLocalizations localizations, String allergyKey) {
+    switch (allergyKey) {
+      case 'allergy_arachides': return localizations.allergy_arachides;
+      case 'allergy_amandes': return localizations.allergy_amandes;
+      case 'allergy_noix': return localizations.allergy_noix;
+      case 'allergy_noisettes': return localizations.allergy_noisettes;
+      case 'allergy_noix_de_cajou': return localizations.allergy_noix_de_cajou;
+      case 'allergy_pistaches': return localizations.allergy_pistaches;
+      case 'allergy_noix_de_pecan': return localizations.allergy_noix_de_pecan;
+      case 'allergy_noix_du_bresil': return localizations.allergy_noix_du_bresil;
+      case 'allergy_noix_de_macadamia': return localizations.allergy_noix_de_macadamia;
+      case 'allergy_lait': return localizations.allergy_lait;
+      case 'allergy_oeufs': return localizations.allergy_oeufs;
+      case 'allergy_soja': return localizations.allergy_soja;
+      case 'allergy_ble': return localizations.allergy_ble;
+      case 'allergy_poisson': return localizations.allergy_poisson;
+      case 'allergy_crevettes': return localizations.allergy_crevettes;
+      case 'allergy_crabes': return localizations.allergy_crabes;
+      case 'allergy_homards': return localizations.allergy_homards;
+      case 'allergy_moules': return localizations.allergy_moules;
+      case 'allergy_huitres': return localizations.allergy_huitres;
+      case 'allergy_palourdes': return localizations.allergy_palourdes;
+      case 'allergy_sesame': return localizations.allergy_sesame;
+      case 'allergy_moutarde': return localizations.allergy_moutarde;
+      case 'allergy_celeri': return localizations.allergy_celeri;
+      case 'allergy_lupin': return localizations.allergy_lupin;
+      case 'allergy_mais': return localizations.allergy_mais;
+      case 'allergy_riz': return localizations.allergy_riz;
+      case 'allergy_avoine': return localizations.allergy_avoine;
+      case 'allergy_orge': return localizations.allergy_orge;
+      case 'allergy_seigle': return localizations.allergy_seigle;
+      case 'allergy_graines_de_tournesol': return localizations.allergy_graines_de_tournesol;
+      case 'allergy_graines_de_citrouille': return localizations.allergy_graines_de_citrouille;
+      case 'allergy_graines_de_pavot': return localizations.allergy_graines_de_pavot;
+      case 'allergy_cannelle': return localizations.allergy_cannelle;
+      case 'allergy_clou_de_girofle': return localizations.allergy_clou_de_girofle;
+      case 'allergy_levure': return localizations.allergy_levure;
+      case 'allergy_glutamate_monosodique': return localizations.allergy_glutamate_monosodique;
+      case 'allergy_sulfites': return localizations.allergy_sulfites;
+      case 'allergy_tartrazine': return localizations.allergy_tartrazine;
+      case 'allergy_benzoates': return localizations.allergy_benzoates;
+      case 'allergy_sorbates': return localizations.allergy_sorbates;
+      case 'allergy_avocat': return localizations.allergy_avocat;
+      case 'allergy_banane': return localizations.allergy_banane;
+      case 'allergy_kiwi': return localizations.allergy_kiwi;
+      case 'allergy_mangue': return localizations.allergy_mangue;
+      case 'allergy_noix_de_coco': return localizations.allergy_noix_de_coco;
+      case 'allergy_huile_de_sesame': return localizations.allergy_huile_de_sesame;
+      case 'allergy_huile_d_arachide': return localizations.allergy_huile_d_arachide;
+      default: return allergyKey;
+    }
   }
 }
