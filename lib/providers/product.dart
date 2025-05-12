@@ -1,11 +1,11 @@
 class Product {
   final String name;
-  final double energy;   // kcal
-  final double carbs;    // g
-  final double fats;     // g
-  final double fiber;    // g
-  final double proteins; // g
-  final double salt;     // g
+  final double energy;    // kcal
+  final double carbs;     // g
+  final double fats;       // g
+  final double fiber;     // g
+  final double proteins;  // g
+  final double salt;      // g
 
   Product({
     required this.name,
@@ -42,5 +42,17 @@ class Product {
       proteins: (nutriments['proteins'] ?? 0).toDouble(),
       salt: (nutriments['salt'] ?? 0).toDouble(),
     );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'name': name,
+      'energy': energy,
+      'carbs': carbs,
+      'fats': fats,
+      'fiber': fiber,
+      'proteins': proteins,
+      'salt': salt,
+    };
   }
 }
