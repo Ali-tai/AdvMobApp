@@ -1,11 +1,12 @@
 class Product {
   final String name;
-  final double energy;    // kcal
-  final double carbs;     // g
-  final double fats;       // g
-  final double fiber;     // g
-  final double proteins;  // g
-  final double salt;      // g
+  final double energy; // kcal
+  final double carbs; // g
+  final double fats; // g
+  final double fiber; // g
+  final double proteins; // g
+  final double salt; // g
+  final List<String>? ingredients; // ADDED: Ingredients list
 
   Product({
     required this.name,
@@ -15,6 +16,7 @@ class Product {
     required this.fiber,
     required this.proteins,
     required this.salt,
+    this.ingredients, // ADDED: Initialize ingredients
   });
 
   factory Product.fromMap(Map<String, dynamic> data) {
@@ -33,6 +35,20 @@ class Product {
     final product = data['product'];
     final nutriments = data['product']['nutriments'] ?? {};
 
+    // Extract ingredients - adjust the key based on the API response
+    List<String>? ingredientsList;
+    if (product['ingredients_text_with_allergens_en'] != null) {
+      ingredientsList = (product['ingredients_text_with_allergens_en'] as String)
+          .split(',')
+          .map((s) => s.trim())
+          .toList();
+    } else if (product['ingredients_text_en'] != null) {
+      ingredientsList = (product['ingredients_text_en'] as String)
+          .split(',')
+          .map((s) => s.trim())
+          .toList();
+    }
+
     return Product(
       name: product['product_name'] ?? 'Unknown',
       energy: (nutriments['energy-kcal'] ?? 0).toDouble(),
@@ -41,6 +57,7 @@ class Product {
       fiber: (nutriments['fiber'] ?? 0).toDouble(),
       proteins: (nutriments['proteins'] ?? 0).toDouble(),
       salt: (nutriments['salt'] ?? 0).toDouble(),
+      ingredients: ingredientsList, // ADDED: Assign ingredients
     );
   }
 
@@ -53,6 +70,7 @@ class Product {
       'fiber': fiber,
       'proteins': proteins,
       'salt': salt,
+      'ingredients': ingredients, // ADDED: Include ingredients in toMap
     };
   }
 }

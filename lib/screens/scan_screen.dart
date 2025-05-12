@@ -4,7 +4,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import '../providers/user_preferences.dart';
 import '../services/open_food_facts_service.dart';
-import '../providers/product.dart'; // Import the Product model
+import '../providers/product.dart';
 import 'info_screen.dart';
 
 class ScanScreen extends StatefulWidget {
@@ -19,7 +19,7 @@ class _ScanScreenState extends State<ScanScreen> {
   QRViewController? controller;
   String qrText = '';
   Product? _scannedProduct;
-  bool? _isSafe; // Nullable boolean to represent the allergy safety
+  bool? _isSafe;
   final OpenFoodFactsService _openFoodFactsService = OpenFoodFactsService();
   bool _isProcessing = false;
 
@@ -29,11 +29,69 @@ class _ScanScreenState extends State<ScanScreen> {
     super.dispose();
   }
 
-  bool _checkAllergies(Product product, List<String> allergies) {
-    // This is a simplified check. Adapt based on your product data structure.
-    final ingredients = product.name.toLowerCase(); // Placeholder: Replace with actual ingredient list access
-    for (final allergy in allergies) {
-      if (ingredients.contains(allergy.toLowerCase())) {
+  bool _checkAllergies(Product product, List<String> allergyKeys, AppLocalizations localizations) {
+    if (product.ingredients == null || product.ingredients!.isEmpty) {
+      return true; // Assume safe if no ingredients listed
+    }
+
+    final List<String> lowerCaseIngredients =
+    product.ingredients!.map((ingredient) => ingredient.toLowerCase()).toList();
+
+    final List<String> userAllergies = allergyKeys.map((key) {
+      switch (key) {
+        case 'allergy_arachides': return 'peanuts';
+        case 'allergy_amandes': return 'almonds';
+        case 'allergy_noix': return 'walnuts';
+        case 'allergy_noisettes': return 'hazelnuts';
+        case 'allergy_noix_de_cajou': return 'cashews';
+        case 'allergy_pistaches': return 'pistachios';
+        case 'allergy_noix_de_pecan': return 'pecans';
+        case 'allergy_noix_du_bresil': return 'brazil nuts';
+        case 'allergy_noix_de_macadamia': return 'macadamia nuts';
+        case 'allergy_lait': return 'milk';
+        case 'allergy_oeufs': return 'eggs';
+        case 'allergy_soja': return 'soy';
+        case 'allergy_ble': return 'wheat';
+        case 'allergy_poisson': return 'fish';
+        case 'allergy_crevettes': return 'shrimp';
+        case 'allergy_crabes': return 'crab';
+        case 'allergy_homards': return 'lobster';
+        case 'allergy_moules': return 'mussels';
+        case 'allergy_huitres': return 'oysters';
+        case 'allergy_palourdes': return 'clams';
+        case 'allergy_sesame': return 'sesame';
+        case 'allergy_moutarde': return 'mustard';
+        case 'allergy_celeri': return 'celery';
+        case 'allergy_lupin': return 'lupin';
+        case 'allergy_mais': return 'corn';
+        case 'allergy_riz': return 'rice';
+        case 'allergy_avoine': return 'oats';
+        case 'allergy_orge': return 'barley';
+        case 'allergy_seigle': return 'rye';
+        case 'allergy_graines_de_tournesol': return 'sunflower seeds';
+        case 'allergy_graines_de_citrouille': return 'pumpkin seeds';
+        case 'allergy_graines_de_pavot': return 'poppy seeds';
+        case 'allergy_cannelle': return 'cinnamon';
+        case 'allergy_clou_de_girofle': return 'cloves';
+        case 'allergy_levure': return 'yeast';
+        case 'allergy_glutamate_monosodique': return 'monosodium glutamate';
+        case 'allergy_sulfites': return 'sulfites';
+        case 'allergy_tartrazine': return 'tartrazine';
+        case 'allergy_benzoates': return 'benzoates';
+        case 'allergy_sorbates': return 'sorbates';
+        case 'allergy_avocat': return 'avocado';
+        case 'allergy_banane': return 'banana';
+        case 'allergy_kiwi': return 'kiwi';
+        case 'allergy_mangue': return 'mango';
+        case 'allergy_noix_de_coco': return 'coconut';
+        case 'allergy_huile_de_sesame': return 'sesame oil';
+        case 'allergy_huile_d_arachide': return 'peanut oil';
+        default: return '';
+      }
+    }).where((allergy) => allergy.isNotEmpty).toList();
+
+    for (final allergy in userAllergies) {
+      if (lowerCaseIngredients.any((ingredient) => ingredient.contains(allergy.toLowerCase()))) {
         return false; // Not safe
       }
     }
@@ -67,7 +125,7 @@ class _ScanScreenState extends State<ScanScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(qrText.isEmpty ? localizations.scanQRCode : localizations.product + ': $qrText',
+                  Text(qrText.isEmpty ? localizations.scanQRCode : '${localizations.product}: $qrText',
                       textAlign: TextAlign.center, style: TextStyle(color: userPrefs.textColor, fontSize: 18)),
                   const SizedBox(height: 10),
                   if (_scannedProduct != null)
@@ -117,8 +175,8 @@ class _ScanScreenState extends State<ScanScreen> {
       if (code != null) {
         setState(() {
           qrText = code;
-          _scannedProduct = null; // Reset previous product
-          _isSafe = null; // Reset previous safety status
+          _scannedProduct = null;
+          _isSafe = null;
         });
         await _fetchAndCheckProduct(code);
       }
@@ -141,8 +199,9 @@ class _ScanScreenState extends State<ScanScreen> {
       }
 
       final product = Product.fromMap(productData);
-      final userAllergies = Provider.of<UserPreferences>(context, listen: false).allergies;
-      final isSafe = _checkAllergies(product, userAllergies);
+      final userPrefs = context.read<UserPreferences>();
+      final localizations = AppLocalizations.of(context)!;
+      final isSafe = _checkAllergies(product, userPrefs.allergies, localizations);
 
       setState(() {
         _scannedProduct = product;
