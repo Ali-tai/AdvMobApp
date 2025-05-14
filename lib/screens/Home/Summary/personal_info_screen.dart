@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-import '../providers/user_preferences.dart';
-import '../providers/locale_provider.dart';
+import '../../../providers/user_preferences.dart';
+import '../../../providers/locale_provider.dart';
 
 class PersonalInfoScreen extends StatelessWidget {
   const PersonalInfoScreen({super.key});
@@ -51,7 +51,7 @@ class PersonalInfoScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
 
-                    /// ➤ Poids
+                    /// Poids
                     _infoRow(
                       label: local.weight,
                       controller: weightController,
@@ -64,7 +64,7 @@ class PersonalInfoScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 10),
 
-                    /// ➤ Taille
+                    /// Taille
                     _infoRow(
                       label: local.height,
                       controller: heightController,
@@ -77,7 +77,7 @@ class PersonalInfoScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 10),
 
-                    /// ➤ Âge
+                    /// Age
                     _infoRow(
                       label: local.age,
                       controller: ageController,
@@ -90,7 +90,7 @@ class PersonalInfoScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 20),
 
-                    /// ➤ Genre
+                    /// Genre
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -100,7 +100,7 @@ class PersonalInfoScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 20),
 
-                    /// ➤ Activité physique
+                    /// Activité physique
                     Text("${local.activityLevel} : ${userPrefs.activityLevel
                         .toStringAsFixed(1)}",
                         style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: userPrefs.textColor)),
@@ -125,7 +125,7 @@ class PersonalInfoScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 20),
 
-                    /// ➤ Langue
+                    /// Langue
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -177,7 +177,7 @@ class PersonalInfoScreen extends StatelessWidget {
     return ElevatedButton(
       onPressed: () => userPrefs.setGender(value),
       style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all(
+        backgroundColor: WidgetStateProperty.all(
             selected ? userPrefs.genderColor : buttonColor),
       ),
       child: Text(
@@ -201,7 +201,7 @@ class PersonalInfoScreen extends StatelessWidget {
         Provider.of<LocaleProvider>(context, listen: false).setLocale(locale);
       },
       style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all(
+        backgroundColor: WidgetStateProperty.all(
             selected ? userPrefs.genderColor : buttonColor),
       ),
       child: Text(

@@ -27,11 +27,11 @@ class HomeScreen extends StatelessWidget {
                 );
               },
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.white),
-                padding: const MaterialStatePropertyAll(
+                backgroundColor: WidgetStateProperty.all(Colors.white),
+                padding: const WidgetStatePropertyAll(
                   EdgeInsets.symmetric(horizontal: 80, vertical: 10),
                 ),
-                side: const MaterialStatePropertyAll(BorderSide(color: Colors.black)),
+                side: const WidgetStatePropertyAll(BorderSide(color: Colors.black)),
               ),
               child: const Text(
                 "Get Started",

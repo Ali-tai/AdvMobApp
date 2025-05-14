@@ -1,9 +1,8 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserPreferences extends ChangeNotifier {
-  // ⚖️ **Données utilisateur**
+  /// Données utilisateur
   double _weight = 80.0;
   int _height = 180;
   String _gender = "homme"; // "homme" ou "femme"
@@ -14,7 +13,7 @@ class UserPreferences extends ChangeNotifier {
   String _language = "fr";
   ThemeMode _themeMode = ThemeMode.system;
 
-  // 🔵 **Valeurs actuelles consommées**
+  /// Valeurs actuelles consommées
   int _energy = 0;
   int _carbs = 0;
   int _fats = 0;
@@ -22,7 +21,7 @@ class UserPreferences extends ChangeNotifier {
   int _protein = 0;
   int _salt = 0;
 
-  // 🔴 **Besoins quotidiens max**
+  /// Besoins quotidiens max
   int _maxEnergy = 2000;
   int _maxCarbs = 250;
   int _maxFats = 70;
@@ -30,7 +29,7 @@ class UserPreferences extends ChangeNotifier {
   int _maxProtein = 100;
   int _maxSalt = 5;
 
-  // **Getters**
+  /// Getters
   double get weight => _weight;
   int get height => _height;
   String get gender => _gender;
@@ -59,7 +58,7 @@ class UserPreferences extends ChangeNotifier {
     _loadPreferences();
   }
 
-  /// 🔄 **Charger les données depuis SharedPreferences**
+  /// Charger les données depuis SharedPreferences
   Future<void> _loadPreferences() async {
     final prefs = await SharedPreferences.getInstance();
     _weight = prefs.getDouble('weight') ?? 80.0;
@@ -86,25 +85,24 @@ class UserPreferences extends ChangeNotifier {
     _maxProtein = prefs.getInt('maxProtein') ?? 100;
     _maxSalt = prefs.getInt('maxSalt') ?? 5;
 
-    calculateNeeds(); // Recalculer les besoins en fonction des données actuelles
-    if (_lastResetDate != null) {
-      final ResetDate = DateTime.tryParse(_lastResetDate);
-      if (ResetDate != null &&
-          ResetDate.year < DateTime.now().year ||
-          ResetDate!.month < DateTime.now().month ||
-          ResetDate.day < DateTime.now().day) {
+    calculateNeeds();
+    if (_lastResetDate.isNotEmpty) {
+      final resetDate = DateTime.tryParse(_lastResetDate);
+      if (resetDate != null &&
+          resetDate.year < DateTime.now().year ||
+          resetDate!.month < DateTime.now().month ||
+          resetDate.day < DateTime.now().day) {
         resetDailyConsumption();
         await prefs.setString(_lastResetDate, DateTime.now().toIso8601String());
       }
     } else {
-      // Première utilisation ou date non trouvée, on initialise
       resetDailyConsumption();
       await prefs.setString(_lastResetDate, DateTime.now().toIso8601String());
     }
     notifyListeners();
   }
 
-  /// ⚖️ **Mettre à jour les données utilisateur**
+  /// Mettre à jour les données utilisateur
   Future<void> setWeight(double newWeight) async {
     _weight = newWeight;
     final prefs = await SharedPreferences.getInstance();
@@ -160,9 +158,8 @@ class UserPreferences extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// 🔢 **Calcul des besoins nutritionnels**
+  /// Calcul des besoins nutritionnels
   void calculateNeeds(){
-    // 🔹 Métabolisme de base (BMR) - Formule de Mifflin-St Jeor
     double bmr;
 
     if (_gender.toLowerCase() == "homme") {
@@ -171,21 +168,21 @@ class UserPreferences extends ChangeNotifier {
       bmr = (10 * _weight) + (6.25 * _height) - (5 * _age) - 161;
     }
 
-    // 🔹 Besoins énergétiques totaux (TDEE)
+    /// Besoins énergétiques totaux (TDEE)
     _maxEnergy = (bmr * _activityLevel).toInt();
 
-    // 🔹 Répartition des macronutriments
+    /// Répartition des macronutriments
     _maxCarbs = ((_maxEnergy * 0.55) / 4).toInt();  // 55% des kcal sous forme de glucides
     _maxFats = ((_maxEnergy * 0.30) / 9).toInt();   // 30% des kcal sous forme de lipides
     _maxProtein = ((_maxEnergy * 0.15) / 4).toInt(); // 15% des kcal sous forme de protéines
     _maxFiber = 35; // Valeur fixe
     _maxSalt = 5;   // Valeur fixe
 
-    _saveMaxPreferences(); // Sauvegarder les nouvelles valeurs max
+    _saveMaxPreferences();
     notifyListeners();
   }
 
-  /// 💾 **Sauvegarde des besoins max**
+  /// Sauvegarde des besoins max
   Future<void> _saveMaxPreferences() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt('maxEnergy', _maxEnergy);
@@ -227,7 +224,7 @@ class UserPreferences extends ChangeNotifier {
     await prefs.setInt('salt', value);
   }
 
-  /// ➕ **Ajouter à la consommation journalière**
+  /// Ajouter à la consommation journalière
   void addEnergy(int value) {
     _energy += value;
     setEnergy(_energy);
@@ -264,7 +261,7 @@ class UserPreferences extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// 🔄 **Réinitialiser la consommation quotidienne**
+  /// Réinitialiser la consommation quotidienne
   void resetDailyConsumption() {
     _energy = 0;
     _carbs = 0;
@@ -280,6 +277,165 @@ class UserPreferences extends ChangeNotifier {
     notifyListeners();
   }
 
+  List<String> getAllergiesText(localizations) {
+    List<String> allergyTextList = [];
+
+    for (String allergy in _allergies) {
+      switch (allergy) {
+        case 'allergy_arachides':
+          allergyTextList.add(localizations.allergy_arachides);
+          break;
+        case 'allergy_amandes':
+          allergyTextList.add(localizations.allergy_amandes);
+          break;
+        case 'allergy_noix':
+          allergyTextList.add(localizations.allergy_noix);
+          break;
+        case 'allergy_noisettes':
+          allergyTextList.add(localizations.allergy_noisettes);
+          break;
+        case 'allergy_noix_de_cajou':
+          allergyTextList.add(localizations.allergy_noix_de_cajou);
+          break;
+        case 'allergy_pistaches':
+          allergyTextList.add(localizations.allergy_pistaches);
+          break;
+        case 'allergy_noix_de_pecan':
+          allergyTextList.add(localizations.allergy_noix_de_pecan);
+          break;
+        case 'allergy_noix_du_bresil':
+          allergyTextList.add(localizations.allergy_noix_du_bresil);
+          break;
+        case 'allergy_noix_de_macadamia':
+          allergyTextList.add(localizations.allergy_noix_de_macadamia);
+          break;
+        case 'allergy_lait':
+          allergyTextList.add(localizations.allergy_lait);
+          break;
+        case 'allergy_oeufs':
+          allergyTextList.add(localizations.allergy_oeufs);
+          break;
+        case 'allergy_soja':
+          allergyTextList.add(localizations.allergy_soja);
+          break;
+        case 'allergy_ble':
+          allergyTextList.add(localizations.allergy_ble);
+          break;
+        case 'allergy_poisson':
+          allergyTextList.add(localizations.allergy_poisson);
+          break;
+        case 'allergy_crevettes':
+          allergyTextList.add(localizations.allergy_crevettes);
+          break;
+        case 'allergy_crabes':
+          allergyTextList.add(localizations.allergy_crabes);
+          break;
+        case 'allergy_homards':
+          allergyTextList.add(localizations.allergy_homards);
+          break;
+        case 'allergy_moules':
+          allergyTextList.add(localizations.allergy_moules);
+          break;
+        case 'allergy_huitres':
+          allergyTextList.add(localizations.allergy_huitres);
+          break;
+        case 'allergy_palourdes':
+          allergyTextList.add(localizations.allergy_palourdes);
+          break;
+        case 'allergy_sesame':
+          allergyTextList.add(localizations.allergy_sesame);
+          break;
+        case 'allergy_moutarde':
+          allergyTextList.add(localizations.allergy_moutarde);
+          break;
+        case 'allergy_celeri':
+          allergyTextList.add(localizations.allergy_celeri);
+          break;
+        case 'allergy_lupin':
+          allergyTextList.add(localizations.allergy_lupin);
+          break;
+        case 'allergy_mais':
+          allergyTextList.add(localizations.allergy_mais);
+          break;
+        case 'allergy_riz':
+          allergyTextList.add(localizations.allergy_riz);
+          break;
+        case 'allergy_avoine':
+          allergyTextList.add(localizations.allergy_avoine);
+          break;
+        case 'allergy_orge':
+          allergyTextList.add(localizations.allergy_orge);
+          break;
+        case 'allergy_seigle':
+          allergyTextList.add(localizations.allergy_seigle);
+          break;
+        case 'allergy_graines_de_tournesol':
+          allergyTextList.add(localizations.allergy_graines_de_tournesol);
+          break;
+        case 'allergy_graines_de_citrouille':
+          allergyTextList.add(localizations.allergy_graines_de_citrouille);
+          break;
+        case 'allergy_graines_de_pavot':
+          allergyTextList.add(localizations.allergy_graines_de_pavot);
+          break;
+        case 'allergy_cannelle':
+          allergyTextList.add(localizations.allergy_cannelle);
+          break;
+        case 'allergy_clou_de_girofle':
+          allergyTextList.add(localizations.allergy_clou_de_girofle);
+          break;
+        case 'allergy_levure':
+          allergyTextList.add(localizations.allergy_levure);
+          break;
+        case 'allergy_glutamate_monosodique':
+          allergyTextList.add(localizations.allergy_glutamate_monosodique);
+          break;
+        case 'allergy_sulfites':
+          allergyTextList.add(localizations.allergy_sulfites);
+          break;
+        case 'allergy_tartrazine':
+          allergyTextList.add(localizations.allergy_tartrazine);
+          break;
+        case 'allergy_benzoates':
+          allergyTextList.add(localizations.allergy_benzoates);
+          break;
+        case 'allergy_sorbates':
+          allergyTextList.add(localizations.allergy_sorbates);
+          break;
+        case 'allergy_avocat':
+          allergyTextList.add(localizations.allergy_avocat);
+          break;
+        case 'allergy_banane':
+          allergyTextList.add(localizations.allergy_banane);
+          break;
+        case 'allergy_kiwi':
+          allergyTextList.add(localizations.allergy_kiwi);
+          break;
+        case 'allergy_mangue':
+          allergyTextList.add(localizations.allergy_mangue);
+          break;
+        case 'allergy_noix_de_coco':
+          allergyTextList.add(localizations.allergy_noix_de_coco);
+          break;
+        case 'allergy_huile_de_sesame':
+          allergyTextList.add(localizations.allergy_huile_de_sesame);
+          break;
+        case 'allergy_huile_d_arachide':
+          allergyTextList.add(localizations.allergy_huile_d_arachide);
+          break;
+        default:
+          break;
+      }
+    }
+
+    if (allergyTextList.isEmpty) {
+      allergyTextList.add(localizations.allergy_none);
+    }
+
+    return allergyTextList;
+  }
+
+
   // Méthode pour obtenir la couleur de fond en fonction du mode
   Color get backgroundColor => _themeMode == ThemeMode.dark ? Colors.black : Colors.white;
 
@@ -292,7 +448,9 @@ class UserPreferences extends ChangeNotifier {
   // Méthode pour obtenir la couleur des boutons en fonction du mode
   Color get buttonColor => _themeMode == ThemeMode.dark ? Colors.blueGrey : Colors.white;
 
+  // Méthode pour obtenir la couleur du bouton en fonction du mode
   Color get genderColor => _gender == "homme" ? Colors.blue : Colors.pink;
 
+  // Méthode pour obtenir la couleur du bouton en fonction du mode
   Color get iconColor => _themeMode == ThemeMode.dark ? Colors.black : Colors.grey;
 }

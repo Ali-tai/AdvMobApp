@@ -1,5 +1,26 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+class MacroColumn extends StatelessWidget {
+  final int level;
+  final String label;
+  final int max;
+  final Color color;
+
+  const MacroColumn({super.key, required this.level, required this.label, required this.max, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text(label, style: TextStyle(color: color, fontSize: 20)),
+        Text(max.toString(), style: TextStyle(color: color, fontSize: 20)),
+        BatteryIndicator(level: (level / max).toDouble(), bordercolor: color),
+        Text(level.toString(), style: TextStyle(color: color, fontSize: 20)),
+      ],
+    );
+  }
+
+}
 
 class BatteryIndicator extends StatelessWidget {
   final double level;

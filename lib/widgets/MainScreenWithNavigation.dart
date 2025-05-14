@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:nutri_tracker/screens/scan_screen.dart';
-import 'package:nutri_tracker/screens/info_screen.dart';
-import 'package:nutri_tracker/screens/summary_screen.dart';
+import 'package:nutri_tracker/screens/Home/scan_screen.dart';
+import 'package:nutri_tracker/screens/Home/info_screen.dart';
+import 'package:nutri_tracker/screens/Home/summary_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:nutri_tracker/providers/user_preferences.dart';
 

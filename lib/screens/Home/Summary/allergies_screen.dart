@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import '../providers/user_preferences.dart';
+import '../../../providers/user_preferences.dart';
 
 class AllergiesScreen extends StatefulWidget {
   const AllergiesScreen({super.key});

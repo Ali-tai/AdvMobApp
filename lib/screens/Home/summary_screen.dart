@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:nutri_tracker/screens/macros_screen.dart';
-import 'package:nutri_tracker/screens/personal_info_screen.dart';
-import 'package:nutri_tracker/screens/allergies_screen.dart';
+import 'package:nutri_tracker/screens/Home/Summary/macros_screen.dart';
+import 'package:nutri_tracker/screens/Home/Summary/personal_info_screen.dart';
+import 'package:nutri_tracker/screens/Home/Summary/allergies_screen.dart';
 import 'package:nutri_tracker/providers/user_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import '../widgets/battery_indicator.dart';
+import '../../widgets/macro_column.dart';
 
 class SummaryScreen extends StatefulWidget {
   const SummaryScreen({super.key});
@@ -15,26 +15,6 @@ class SummaryScreen extends StatefulWidget {
 }
 
 class _SummaryScreenState extends State<SummaryScreen> {
-  late TextEditingController _allergiesController;
-
-  @override
-  void initState() {
-    super.initState();
-    final userPrefs = Provider.of<UserPreferences>(context, listen: false);
-    _updateAllergiesText(userPrefs.allergies);
-  }
-
-  void _updateAllergiesText(List<String> allergies) {
-    _allergiesController = TextEditingController(
-      text: allergies.isNotEmpty ? "Allergies : ${allergies.join(', ')}" : "Allergies : Aucune",
-    );
-  }
-
-  @override
-  void dispose() {
-    _allergiesController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +35,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
         child: Column(
           children: [
             SizedBox(height: 10),
-            /// 🔋 **Indicateurs de macros**
+            /// Indicateurs de macros
             Consumer<UserPreferences>(
               builder: (context, userPrefs, child) {
                 return ElevatedButton(
@@ -89,7 +69,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
 
             SizedBox(height: 10),
 
-            /// 📏 **Poids / Taille / Sexe**
+            /// Poids / Taille / Sexe
             Consumer<UserPreferences>(
               builder: (context, userPrefs, child) {
                 return ElevatedButton(
@@ -120,7 +100,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
 
             SizedBox(height: 10),
 
-            /// ⚠️ **Allergies**
+            /// Allergies
             Consumer<UserPreferences>(
               builder: (context, userPrefs, child) {
                 return ElevatedButton(
@@ -142,8 +122,8 @@ class _SummaryScreenState extends State<SummaryScreen> {
                         width: double.infinity,
                         padding: EdgeInsets.all(20),
                         child: Text(
-                          userPrefs.allergies.isNotEmpty ? userPrefs.allergies.join(', ') : localizations.noAllergies,
-                          textAlign: TextAlign.left,
+                          userPrefs.getAllergiesText(localizations).join(', '),
+                          textAlign: TextAlign.center,
                           style: TextStyle(color: userPrefs.textColor, fontSize: 20),
                         ),
                       ),
