@@ -110,7 +110,7 @@ class PersonalInfoScreen extends StatelessWidget {
                       max: 1.9,
                       divisions: 5,
                       label: userPrefs.activityLevel.toStringAsFixed(1),
-                      activeColor: userPrefs.gender == "femme" ? Colors.pink : Colors.blue,
+                      activeColor: userPrefs.genderColor,
                       inactiveColor: Colors.grey[300],
                       onChanged: (double value) {
                         userPrefs.setActivityLevel(value);

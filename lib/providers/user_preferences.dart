@@ -274,6 +274,7 @@ class UserPreferences extends ChangeNotifier {
 
   void toggleTheme() {
     _themeMode = _themeMode == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
+    setThemeMode(_themeMode);
     notifyListeners();
   }
 
